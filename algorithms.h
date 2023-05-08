@@ -22,7 +22,24 @@ void algorithms::solve(vector< vector<int> >puzzle, int algChoice) {
 
 // Calculate heuristic cost using misplaced tile heuristic
 int algorithms::misplacedTileCost(vector< vector<int> > puzzle) {
-  return 0;
+  int missed_tiles = 0;
+  int count = 1;
+  for (int i =0; i < 3; i++){
+    for(int j = 0; j < 3; j++){
+      if(puzzle[i][j] == 0){
+        //do nothing
+      }
+      else if (puzzle[i][j] != count){
+
+        missed_tiles++;
+      }
+      count++;
+   
+    }
+  }
+
+
+  return missed_tiles;
 }
 
 // Calculate heuristic cost using euclidean distance heuristic
