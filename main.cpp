@@ -2,6 +2,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include "algorithms.h"
 
 using namespace std;
 
@@ -27,6 +28,9 @@ int main() {
   }
   else {
     // Create random default puzzle, for now we will use the same one every time
+    // 1 2 3      1 2 3      1 2 3
+    // 4 0 5  ->  4 5 0  ->  4 5 6
+    // 7 8 6      7 8 6      7 8 0
     startPuzzle.at(0) = 1;
     startPuzzle.at(1) = 2;
     startPuzzle.at(2) = 3;
@@ -47,6 +51,27 @@ int main() {
   cout << endl;
   // END USER INPUT PROMPT
   // We now have a puzzle stored in vector startPuzzle and algorithm choice in algChoice
+
+  // Convert 9x1 startPuzzle to 3x3 vector puzzle
+  vector < vector<int> > puzzle(3);
+  int count = 0;
+  for (unsigned i = 0; i < 3; ++i) {
+    for (unsigned j = 0; j < 3; ++j) {
+      puzzle.at(i).push_back(startPuzzle.at(count));
+      count++;
+    }
+  }
+
+  algorithms alg;
+  if (algChoice == 1) {
+    alg.solve(puzzle, algChoice);
+  }
+  else if (algChoice == 2) {
+    alg.solve(puzzle, algChoice);
+  }
+  else { // algChoice == 3
+    alg.solve(puzzle, algChoice);
+  }
 
   return 0;
 }
