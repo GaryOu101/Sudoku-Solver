@@ -8,7 +8,7 @@ using namespace std;
 
 int main() {
   // USER INPUT PROMPT
-  cout << "Welcome to 862172324 / (Gary SID) 8 puzzle solver." << endl;
+  cout << "Welcome to 862172324 /  8 puzzle solver." << endl;
   cout << "Type '1' to use a default puzzle, or '2' to enter your own puzzle." << endl;
   int puzzleType = 0;
   cin >> puzzleType;
