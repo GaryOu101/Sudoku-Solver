@@ -3,7 +3,6 @@
 #include <string>
 #include <vector>
 #include "algorithms.h"
-#include "operators.h"
 
 using namespace std;
 
