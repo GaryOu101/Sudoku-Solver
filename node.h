@@ -20,7 +20,6 @@ class node {
       // Costs
       int g_n;
       int h_n;
-      int uniform_cost = 0;
       // Puzzle
       vector< vector<int> > puzzle;
 
@@ -44,10 +43,9 @@ class node {
       }
 
 
-      node(vector<vector<int>> puzzle, int uniform_cost){ //nodes using uniform cost
+      node(vector< vector<int> > puzzle, int uniform_cost){ //nodes using uniform cost
         this->puzzle = puzzle;
-        this->uniform_cost = uniform_cost;
-
+        this->uniform_cost = g_n;
       }
 };
 
