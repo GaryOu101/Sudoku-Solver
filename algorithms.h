@@ -6,6 +6,7 @@
 #include <vector>
 #include <iostream>
 #include <queue>
+#include <stack>
 #include "operators.h"
 #include "node.h"
 
@@ -17,7 +18,7 @@ class algorithms {
     vector < vector<int> > goalState;
 
     // Class Methods
-    void solve(vector< vector<int> >, int);
+    void astar(vector< vector<int> >, int);
     int misplacedTileCost(vector< vector<int> >);
     int euclideanDistanceCost(vector< vector<int> >);
     void printPuzzle(vector< vector<int> >);
@@ -25,7 +26,7 @@ class algorithms {
 };
 
 // Solve puzzle
-void algorithms::solve(vector< vector<int> >puzzle, int algChoice) {
+void algorithms::astar(vector< vector<int> >puzzle, int algChoice) {
   // Initialize goal state
   goalState.resize(3);
   goalState.at(0).push_back(1);
@@ -41,34 +42,63 @@ void algorithms::solve(vector< vector<int> >puzzle, int algChoice) {
   // Initialize start node
   node curr(puzzle);
 
+  // If we are using heuristic functions, calculate initial h(n)
+  if (algChoice == 2) { // Using misplaced tile
+      curr.h_n = misplacedTileCost(curr.puzzle);
+    }
+  else if (algChoice == 3) { // Using euclidean distance
+      curr.h_n = euclideanDistanceCost(curr.puzzle);
+  }
+
   // Initialize frontier queue
   priority_queue<node, vector<node>, node::increasing> frontier;
   frontier.push(curr);
+  int maxFrontier = frontier.size(); // Track maximum nodes in frontier at any given time
   
   // Initialize expanded set
   vector<node> expanded;
   expanded.push_back(curr);
   
   while(!frontier.empty()){
-    cout << "Board at the top of frontier" << endl;
     node* n;
     n = new node(frontier.top());
-    
-    printPuzzle(frontier.top().puzzle);
 
+    if (maxFrontier < frontier.size()) {
+      maxFrontier = frontier.size();
+    }
+    
+    // Check if next state to be expanded is the goal state
     if(goalState == frontier.top().puzzle){
+      // We have reached goal state, now trace back to start node to see optimal path to goal
+      stack<node> goal_path;
+      node curr = frontier.top();
+      while (curr.parent != NULL) {
+        curr = *curr.parent;
+        goal_path.push(curr);
+      }
+      int goal_depth = goal_path.size();
+      while (!goal_path.empty()) {
+        cout << "The best state to expand with g(n) = " << goal_path.top().g_n << " and h(n) = " << goal_path.top().h_n << " is..." << endl;
+        printPuzzle(goal_path.top().puzzle);
+        goal_path.pop();
+      }
       cout << "Found goal state!" << endl;
-      printPuzzle(frontier.top().puzzle);
+      printPuzzle(goalState);
+      cout << "To solve this problem the search algorithm expanded a total of " << expanded.size() << " nodes." << endl;
+      cout << "The maximum number of nodes in the queue at any one time: " << maxFrontier << "." << endl;
+      cout << "The depth of the goal node was " << (goal_depth + 1) << "." << endl;
       return; 
     }
+
+    // Not goal state so expand it
     frontier.pop();
     expanded.push_back(*n);
 
     // Move the puzzle in all 4 directions
-    node* node_d = new node(moveDown(n->puzzle), n->g_n++); 
-    node* node_u = new node(moveUp(n->puzzle), n->g_n++);
-    node* node_l = new node(moveLeft(n->puzzle), n->g_n++);
-    node* node_r = new node(moveRight(n->puzzle), n->g_n++);
+    node* node_d = new node(moveDown(n->puzzle), n, (n->g_n + 1)); 
+    node* node_u = new node(moveUp(n->puzzle), n, (n->g_n + 1));
+    node* node_l = new node(moveLeft(n->puzzle), n, (n->g_n + 1));
+    node* node_r = new node(moveRight(n->puzzle), n, (n->g_n + 1));
 
     // Check if we are using heuristic functions
     if (algChoice == 2) { // Using misplaced tile
@@ -86,36 +116,20 @@ void algorithms::solve(vector< vector<int> >puzzle, int algChoice) {
 
     // We now check if we already visited each of these nodes and push to queue if not
     if(!checkTraversed(node_d->puzzle, expanded)){  
-      node_d->parent = n; 
       n->downChild = node_d;
       frontier.push(*node_d);
-
-      cout <<"Pushed a board to queue: down" << endl;
-      printPuzzle(node_d->puzzle);
     }
     if(!checkTraversed(node_u->puzzle, expanded)){
-      node_u->parent = n;
       n->upChild = node_u;
       frontier.push(*node_u);
-
-      cout <<"Pushed a board to queue: up" << endl;
-      printPuzzle(node_u->puzzle);
     }
     if(!checkTraversed(node_r->puzzle, expanded)){
-      node_r->parent = n;
       n->rightChild = node_r;
       frontier.push(*node_r);
-
-      cout <<"Pushed a board to queue: right" << endl;
-      printPuzzle(node_r->puzzle);
     }
     if(!checkTraversed(node_l->puzzle, expanded)){
-      node_l->parent = n;
       n->leftChild = node_l;
       frontier.push(*node_l);
-
-      cout <<"Pushed a board to queue: left" << endl;
-      printPuzzle(node_l->puzzle);
     }
   }
 }
@@ -198,7 +212,6 @@ void algorithms::printPuzzle(vector< vector<int> > puzzle) {
 // Check if current node is in the expanded set
 bool algorithms::checkTraversed(vector< vector<int> > puzzle, vector<node> expanded){
   for(int i = 0; i < expanded.size();i++){
-    printPuzzle(expanded[i].puzzle);
     if(expanded[i].puzzle == puzzle){
         return true;
     }

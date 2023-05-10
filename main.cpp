@@ -8,7 +8,7 @@ using namespace std;
 
 int main() {
   // USER INPUT PROMPT
-  cout << "Welcome to 862172324 /  8 puzzle solver." << endl;
+  cout << "Welcome to 862172324 / 862180430 8 puzzle solver." << endl;
   cout << "Type '1' to use a default puzzle, or '2' to enter your own puzzle." << endl;
   int puzzleType = 0;
   cin >> puzzleType;
@@ -64,13 +64,13 @@ int main() {
 
   algorithms alg;
   if (algChoice == 1) {
-    alg.solve(puzzle, algChoice);
+    alg.astar(puzzle, algChoice);
   }
   else if (algChoice == 2) {
-    alg.solve(puzzle, algChoice);
+    alg.astar(puzzle, algChoice);
   }
   else { // algChoice == 3
-    alg.solve(puzzle, algChoice);
+    alg.astar(puzzle, algChoice);
   }
 
   return 0;

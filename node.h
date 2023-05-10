@@ -43,9 +43,11 @@ class node {
       }
 
 
-      node(vector< vector<int> > puzzle, int uniform_cost){ //nodes using uniform cost
+      node(vector< vector<int> > puzzle, node* parent, int g_n){ // Creating child node
         this->puzzle = puzzle;
-        this->uniform_cost = g_n;
+        this->parent = parent;
+        this->g_n = g_n;
+        h_n = 0; // Set this in case we are using uniform cost search, so h(n) doesn't get a junk value
       }
 };
 
